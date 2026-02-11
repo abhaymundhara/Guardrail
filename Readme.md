@@ -18,9 +18,10 @@ Guardrail is a policy enforcement system designed to protect enterprise LLM depl
    - `/validate` endpoint accepts text input
    - Clean error handling
 
-3. **Python SDK** (In Progress)
+3. **Python SDK** (v0.1.0)
    - Developer-friendly client library
    - Easy integration into existing apps
+   - Fully tested and functional
 
 ## Quick Start
 
@@ -33,7 +34,7 @@ Guardrail is a policy enforcement system designed to protect enterprise LLM depl
 ### Installation
 
 ```bash
-pip install guardrail-sdk
+pip install -e .
 ```
 
 ### Basic Usage
@@ -41,7 +42,7 @@ pip install guardrail-sdk
 ```python
 from guardrail import GuardrailClient
 
-client = GuardrailClient(policy_engine_url="http://localhost:8000")
+client = GuardrailClient(policy_engine_url="http://localhost:8001")
 result = client.validate("Your text here")
 
 if result['allowed']:
@@ -67,6 +68,17 @@ Example: "fuck this shit" → BLOCKED
 Max refund: $100
 Example: "I can refund you $150" → BLOCKED
 
+## Test Results (v0.1.0)
+
+End-to-end SDK testing completed successfully:
+
+✓ PASS: Safe message validation
+✓ PASS: PII detection (SSN)
+✓ PASS: Unauthorized refund detection
+✓ PASS: Profanity filtering
+
+All policies functioning correctly with proper violation detection and reporting.
+
 ## API Reference
 
 ### POST /validate
@@ -91,16 +103,23 @@ Response:
 
 - [x] Policy Engine Core
 - [x] API Wrapper
-- [ ] Python SDK
+- [x] Python SDK (v0.1.0)
+- [x] End-to-end Testing
 - [ ] Dashboard
 - [ ] Monitoring & Logging
+- [ ] Custom Policy Support
+
+## Documentation
+
+- [Deployment Guide](docs/DEPLOYMENT.md)
+- [Contributing Guide](docs/CONTRIBUTING.md)
 
 ## Next Steps
 
-- Build Python SDK for easy integration
-- Create monitoring dashboard
+- Build monitoring dashboard
 - Add custom policy support
-- Enterprise deployment guides
+- Enterprise deployment automation
+- Performance optimization
 
 ---
 
