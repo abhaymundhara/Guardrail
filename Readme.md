@@ -4,8 +4,7 @@
 
 <img src="https://visitor-badge.laobi.icu/badge?page_id=HKUDS.Guardrail&style=for-the-badge&color=00d4ff" alt="Views">
 
-**Guardrail is a policy enforcement system designed to protect enterprise LLM deployments from safety violations including PII leakage, profanity, and unauthorized actions.
-**
+**Guardrail is a policy enforcement system designed to protect enterprise LLM deployments from safety violations including PII leakage, profanity, and unauthorized actions.**
 
 </div>
 
