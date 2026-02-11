@@ -2,7 +2,7 @@ import re
 from typing import Dict, List
 
 class PolicyEngine:
-    def init(self):
+    def __init__(self):
         self.policies = [
             PIIPolicy(),
             ProfanityPolicy(),
