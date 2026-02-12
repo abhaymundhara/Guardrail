@@ -48,3 +48,37 @@ logs/
 
 # Terminal logs
 .guardrail_terminal_logs/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Node modules (if frontend uses npm)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build outputs
+*.whl
+*.tar.gz
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Secrets and credentials
+*.pem
+*.key
+credentials.json
+secrets.json
