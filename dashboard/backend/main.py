@@ -1,11 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from typing import List, Optional
 from datetime import datetime
 from sqlalchemy.orm import Session
 from database import SessionLocal, Violation, engine
 import database
+import json
 
 # Create tables
 database.Base.metadata.create_all(bind=engine)
@@ -34,9 +35,19 @@ class ViolationResponse(BaseModel):
     violations: List[str]
     confidence_score: float
     status: str
+    policy_engine: Optional[str] = None
     
-    class Config:
-        orm_mode = True
+    @field_validator("violations", mode="before")
+    @classmethod
+    def parse_violations(cls, v):
+        if isinstance(v, str):
+            try:
+                return json.loads(v)
+            except:
+                return []
+        return v or []
+    
+    model_config = {"from_attributes": True}
 
 # Routes
 @app.get("/health")
@@ -51,9 +62,14 @@ async def get_stats():
         blocked = db.query(Violation).filter(Violation.status == "blocked").count()
         
         violation_types = {}
-        # Simple aggregation (in a real app, do this in SQL)
         for v in db.query(Violation).all():
-            for vtype in (v.violations or []):
+            violations_list = v.violations
+            if isinstance(violations_list, str):
+                try:
+                    violations_list = json.loads(violations_list)
+                except:
+                    violations_list = []
+            for vtype in (violations_list or []):
                 violation_types[vtype] = violation_types.get(vtype, 0) + 1
         
         return {
@@ -64,12 +80,15 @@ async def get_stats():
     finally:
         db.close()
 
-@app.get("/violations", response_model=dict)
+@app.get("/violations")
 async def get_violations(limit: int = 50):
     db = SessionLocal()
     try:
         violations = db.query(Violation).order_by(Violation.timestamp.desc()).limit(limit).all()
-        return {"violations": violations, "total": len(violations)}
+        return {
+            "violations": [ViolationResponse.model_validate(v) for v in violations],
+            "total": len(violations)
+        }
     finally:
         db.close()
 
@@ -79,9 +98,9 @@ async def log_violation(log: ViolationLog):
     try:
         violation = Violation(
             text=log.text,
-            violations=log.violations,
+            violations=json.dumps(log.violations),
             confidence_score=log.confidence_score,
-            status="blocked" if log.violations else "allowed" # Ensure status logic matches
+            status="blocked" if log.violations else "allowed"
         )
         db.add(violation)
         db.commit()

@@ -441,7 +441,7 @@
 
         // Update breakdown by type
         const breakdownContainer = document.getElementById("breakdownByType");
-        const breakdown = data.violations_by_type || {};
+        const breakdown = data.violation_breakdown || {};
 
         if (Object.keys(breakdown).length === 0) {
           breakdownContainer.innerHTML =
